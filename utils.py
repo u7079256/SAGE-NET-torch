@@ -1,6 +1,11 @@
+import os.path
+
 import cv2
 import os.path as path
 import numpy as np
+
+import config
+import io_helper
 
 
 def resize_tensor(tensor, new_size):
@@ -161,3 +166,28 @@ def get_branch_from_experiment_id(experiment_id):
         branch = "semseg"
 
     return branch
+
+def dreye_mean_frame(dir=config.dreyeve_dir):
+    """
+    We have mean frames corresponding to individual sequences. Therefore, just add them up and get the average.
+    :param dir: Dataset dir
+    """
+    sub_name_list = list(range(1,75))
+    w = 1920
+    h = 1080
+    sum_img = np.zeros((3,1080,1920))
+    sub_dir_list = [os.path.join(os.path.join(dir,str(ele).zfill(2)),'mean_frame.png') for ele in sub_name_list]
+    for img_dir in sub_dir_list:
+        img = io_helper.read_image(img_dir,channels_first=True)
+        assert img.shape == (3,1080,1920) , img.shape
+        sum_img += img
+    sum_img = sum_img.astype(np.float32)
+    sum_img = sum_img/74
+    io_helper.write_image("E:\DREYEVE_DATA\dreyeve_mean_frame.png",sum_img,channels_first=True)
+
+
+
+if __name__ == '__main__':
+    dreye_mean_frame()
+
+

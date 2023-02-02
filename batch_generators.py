@@ -562,4 +562,4 @@ def test_load_batch():
 
 # tester function
 if __name__ == '__main__':
-    test_load_batch()
+    testl_load_batch()
